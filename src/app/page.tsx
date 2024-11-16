@@ -1,37 +1,170 @@
-import Link from "next/link";
+'use client'
+
+import { type RowSelectionState } from "@tanstack/react-table"
+import { Edit2 } from "lucide-react"
+import Link from "next/link"
+import { useState } from "react"
+import { BaseTable } from "~/components/tables/base-table"
+import { Button } from "~/components/ui/button"
+import { Checkbox } from "~/components/ui/checkbox"
 
 export default function HomePage() {
+  const [
+    rowSelection,
+    setRowSelection,
+  ] = useState<RowSelectionState>({
+  })
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-      <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-        <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-          Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-        </h1>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-          <Link
-            className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-            href="https://create.t3.gg/en/usage/first-steps"
-            target="_blank"
-          >
-            <h3 className="text-2xl font-bold">First Steps →</h3>
-            <div className="text-lg">
-              Just the basics - Everything you need to know to set up your
-              database and authentication.
-            </div>
-          </Link>
-          <Link
-            className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-            href="https://create.t3.gg/en/introduction"
-            target="_blank"
-          >
-            <h3 className="text-2xl font-bold">Documentation →</h3>
-            <div className="text-lg">
-              Learn more about Create T3 App, the libraries it uses, and how to
-              deploy it.
-            </div>
-          </Link>
-        </div>
-      </div>
-    </main>
-  );
+    <div>
+      <BaseTable
+        columns={[
+          {
+            id: "select",
+            header: ({ table }) => (
+              <Checkbox
+                checked={
+                  table.getIsAllPageRowsSelected() ||
+                  (table.getIsSomePageRowsSelected() && "indeterminate")
+                }
+                onCheckedChange={value =>
+                  table.toggleAllPageRowsSelected(!!value)
+                }
+                aria-label="Select all"
+                className="translate-y-0.5"
+              />
+            ),
+            cell: ({ row }) => (
+              <Checkbox
+                checked={row.getIsSelected()}
+                onCheckedChange={value => row.toggleSelected(!!value)}
+                aria-label="Select row"
+                className="translate-y-0.5"
+              />
+            ),
+            enableSorting: false,
+            enableHiding: false,
+            maxSize: 33,
+          },
+          {
+            header: "name",
+            accessorKey: "name",
+          },
+          {
+            header: "description",
+            accessorKey: "description",
+          },
+          {
+            header: "update at",
+            accessorKey: "update_at",
+          },
+          {
+            id: "actions",
+            header: "Act",
+            cell: () => (
+              <div>
+                <Button size="icon" variant="ghost" className="size-7">
+                  <Edit2 />
+                </Button>
+              </div>
+            ),
+            maxSize: 60,
+          },
+        ]}
+        data={[
+          {
+            name: "name 1",
+            description: "description 1",
+            update_at: "10-2024",
+          },
+          {
+            name: "name 2",
+            description: "description 2",
+            update_at: "11-2024",
+          },
+          {
+            name: "name 3",
+            description: "description 3",
+            update_at: "12-2024",
+          },
+          {
+            name: "name 4",
+            description: "description 4",
+            update_at: "5-2024",
+          },
+          {
+            name: "name 1",
+            description: "description 1",
+            update_at: "10-2024",
+          },
+          {
+            name: "name 2",
+            description: "description 2",
+            update_at: "11-2024",
+          },
+          {
+            name: "name 3",
+            description: "description 3",
+            update_at: "12-2024",
+          },
+          {
+            name: "name 4",
+            description: "description 4",
+            update_at: "5-2024",
+          },
+          {
+            name: "name 1",
+            description: "description 1",
+            update_at: "10-2024",
+          },
+          {
+            name: "name 2",
+            description: "description 2",
+            update_at: "11-2024",
+          },
+          {
+            name: "name 3",
+            description: "description 3",
+            update_at: "12-2024",
+          },
+          {
+            name: "name 4",
+            description: "description 4",
+            update_at: "5-2024",
+          },
+          {
+            name: "name 1",
+            description: "description 1",
+            update_at: "10-2024",
+          },
+          {
+            name: "name 2",
+            description: "description 2",
+            update_at: "11-2024",
+          },
+          {
+            name: "name 3",
+            description: "description 3",
+            update_at: "12-2024",
+          },
+          {
+            name: "name 4",
+            description: "description 4",
+            update_at: "5-2024",
+          },
+        ]}
+        options={{
+          initialState: {
+            columnPinning: {
+              right: ["actions"],
+            },
+          },
+          state: {
+            rowSelection,
+          },
+          onRowSelectionChange: setRowSelection,
+        }}
+      />
+    </div>
+  )
 }
