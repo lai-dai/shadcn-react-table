@@ -18,6 +18,7 @@ import {
   useSidebar,
   SidebarSeparator,
   SidebarGroupLabel,
+  SidebarFooter,
 } from "~/components/ui/sidebar"
 import {
   Collapsible,
@@ -108,6 +109,8 @@ export function AppSidebar() {
           </SidebarGroup>
         </ScrollArea>
       </SidebarContent>
+
+      <SidebarFooter className="h-16" />
     </Sidebar>
   )
 }

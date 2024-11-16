@@ -6,10 +6,12 @@ import { useMemo, useState } from "react"
 import { BaseTableStyle01 } from "~/components/tables/bases/base-table-style-01"
 import { Button } from "~/components/ui/button"
 import { Checkbox } from "~/components/ui/checkbox"
-import { makeData, type IPerson } from "~/lib/make-data"
+import { Persons100 } from "~/data/person-100"
+import { type IPerson } from "~/lib/make-data"
+import { DateCell } from "./cells/date-cell"
 
 export function MyReactTableDemo() {
-  const [data] = useState(() => makeData(10))
+  const [data] = useState(Persons100)
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
 
   const columns = useMemo<ColumnDef<IPerson>[]>(
@@ -73,6 +75,7 @@ export function MyReactTableDemo() {
         header: "createdAt",
         accessorKey: "createdAt",
         minSize: 250,
+        cell: DateCell,
       },
       {
         id: "actions",
@@ -105,6 +108,7 @@ export function MyReactTableDemo() {
         },
         onRowSelectionChange: setRowSelection,
       }}
+      className="max-h-[80vh] min-h-96"
     />
   )
 }

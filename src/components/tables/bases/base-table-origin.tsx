@@ -39,10 +39,10 @@ export function BaseTableOrigin<T>({
   options,
 }: BaseOriginTableProps<T>) {
   return (
-    <div className={cn("w-full overflow-auto border rounded-md", className)}>
+    <div className={cn("w-full overflow-auto rounded-md border", className)}>
       <ReactTable data={data} columns={columns} options={options}>
         <Table className="bg-background">
-          <TableHeader className="border-b">
+          <TableHeader className="sticky top-0 z-10 border-b bg-background shadow-[0px_-3px_3px_-3px_hsl(var(--table-border))_inset]">
             {headerGroup => (
               <TableHeaderRow headerGroup={headerGroup}>
                 {header => (
