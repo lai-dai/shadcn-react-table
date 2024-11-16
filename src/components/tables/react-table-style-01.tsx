@@ -108,7 +108,7 @@ export function MyReactTableDemo() {
         },
         onRowSelectionChange: setRowSelection,
       }}
-      className="max-h-[80vh] min-h-96"
+      className="max-h-[72vh] min-h-96"
     />
   )
 }

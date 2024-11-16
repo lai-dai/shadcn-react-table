@@ -81,7 +81,7 @@ export function AppSidebar() {
   return (
     <Sidebar
       collapsible={isMobile ? undefined : "none"}
-      className="sticky top-0 z-10 h-screen border-r">
+      className="fixed top-0 z-10 h-screen border-r">
       <SidebarHeader className="h-16 justify-center px-6">
         <h1>
           <Link
@@ -175,8 +175,8 @@ function Tree({ isSubMenu, ...props }: MenuItem & { isSubMenu?: boolean }) {
         {Array.isArray(props?.children) && (
           <CollapsibleContent>
             <SidebarMenuSub className="mr-0 pr-0">
-              {props?.children.map(child => (
-                <Tree key={child.title} isSubMenu {...child} />
+              {props?.children.map((child, idx) => (
+                <Tree key={idx} isSubMenu {...child} />
               ))}
             </SidebarMenuSub>
           </CollapsibleContent>

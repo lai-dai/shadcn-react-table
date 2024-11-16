@@ -49,7 +49,7 @@ export function BaseTableOrigin<T>({
                   <TableHead
                     header={header}
                     className={cn(
-                      "[&:not(:last-child)]:border-r",
+                      "border-r",
                       header.column.getIsPinned() &&
                         "bg-background text-foreground",
                     )}
@@ -68,7 +68,7 @@ export function BaseTableOrigin<T>({
                       <TableCell
                         cell={cell}
                         className={cn(
-                          "[&:not(:last-child)]:border-r",
+                          "border-r",
                           cell.column.getIsPinned() && "bg-background",
                         )}
                       />
