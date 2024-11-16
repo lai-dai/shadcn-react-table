@@ -3,13 +3,13 @@
 import { type ColumnDef, type RowSelectionState } from "@tanstack/react-table"
 import { Edit2 } from "lucide-react"
 import { useMemo, useState } from "react"
-import { BaseTable } from "~/components/tables/base-table"
+import { BaseTableStyle01 } from "~/components/tables/bases/base-table-style-01"
 import { Button } from "~/components/ui/button"
 import { Checkbox } from "~/components/ui/checkbox"
 import { makeData, type IPerson } from "~/lib/make-data"
 
-export function ReactTableDemo() {
-  const [data] = useState(() => makeData(100))
+export function MyReactTableDemo() {
+  const [data] = useState(() => makeData(10))
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
 
   const columns = useMemo<ColumnDef<IPerson>[]>(
@@ -40,20 +40,18 @@ export function ReactTableDemo() {
         maxSize: 34,
       },
       {
-        header: "age",
-        accessorKey: "age",
-      },
-      {
-        header: "createdAt",
-        accessorKey: "createdAt",
+        header: "id",
+        accessorKey: "id",
+        size: 50,
       },
       {
         header: "firstName",
         accessorKey: "firstName",
       },
       {
-        header: "id",
-        accessorKey: "id",
+        header: "age",
+        accessorKey: "age",
+        size: 50,
       },
       {
         header: "lastName",
@@ -72,6 +70,11 @@ export function ReactTableDemo() {
         accessorKey: "visits",
       },
       {
+        header: "createdAt",
+        accessorKey: "createdAt",
+        minSize: 250,
+      },
+      {
         id: "actions",
         header: "Act",
         cell: () => (
@@ -88,7 +91,7 @@ export function ReactTableDemo() {
   )
 
   return (
-    <BaseTable
+    <BaseTableStyle01
       columns={columns}
       data={data}
       options={{

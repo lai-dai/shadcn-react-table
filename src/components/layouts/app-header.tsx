@@ -3,7 +3,6 @@
 import { SidebarTrigger } from "~/components/ui/sidebar"
 import { ThemeToggle } from "./theme-toggle"
 import { useEffect, useState } from "react"
-import { cn } from "~/lib/utils"
 
 export function AppHeader() {
   const [isSticky, setIsSticky] = useState(false)
@@ -26,10 +25,10 @@ export function AppHeader() {
 
   return (
     <div
-      className={cn(
-        "sticky top-0 z-10 flex h-16 items-center justify-between bg-background px-3",
-        isSticky ? "border-b shadow-md" : "",
-      )}>
+      data-sticky={isSticky}
+      className={
+        "sticky top-0 z-10 flex h-16 items-center justify-between border-b bg-background px-3 data-[sticky=true]:shadow-md"
+      }>
       <div>
         <SidebarTrigger className="md:hidden" />
       </div>

@@ -23,7 +23,7 @@ import {
 
 import { cn } from "~/lib/utils"
 
-interface BaseTableProps<T extends RowData> {
+interface BaseOriginTableProps<T extends RowData> {
   className?: string
   columns: ColumnDef<T>[]
   data: T[]
@@ -31,31 +31,27 @@ interface BaseTableProps<T extends RowData> {
   options?: Omit<TableOptions<T>, "data" | "columns" | "getCoreRowModel">
 }
 
-export function BaseTable<T>({
+export function BaseTableOrigin<T>({
   className,
   columns,
   data,
   ExpandedComponent,
   options,
-}: BaseTableProps<T>) {
+}: BaseOriginTableProps<T>) {
   return (
-    <div
-      className={cn(
-        "border-table-border w-full overflow-auto border",
-        className,
-      )}>
+    <div className={cn("w-full overflow-auto border rounded-md", className)}>
       <ReactTable data={data} columns={columns} options={options}>
-        <Table className="bg-table text-table-foreground text-sm">
-          <TableHeader className="bg-table border-table-border border-b">
+        <Table className="bg-background">
+          <TableHeader className="border-b">
             {headerGroup => (
               <TableHeaderRow headerGroup={headerGroup}>
                 {header => (
                   <TableHead
                     header={header}
                     className={cn(
-                      "border-table-border hover:bg-table-accent hover:text-table-accent-foreground h-8 px-2 py-1 text-left [&:not(:last-child)]:border-r",
+                      "[&:not(:last-child)]:border-r",
                       header.column.getIsPinned() &&
-                        "bg-table text-table-foreground",
+                        "bg-background text-foreground",
                     )}
                   />
                 )}
@@ -63,20 +59,17 @@ export function BaseTable<T>({
             )}
           </TableHeader>
 
-          <TableBody className="border-table-border border-b">
+          <TableBody className="border-b">
             <TableRowsTrack>
               {row => (
                 <Fragment>
-                  <TableRow
-                    row={row}
-                    className="group/tableRow data-[selected=true]:bg-table-primary data-[selected=true]:text-table-primary-foreground even:bg-table-secondary hover:bg-table-accent hover:text-table-accent-foreground">
+                  <TableRow row={row}>
                     {cell => (
                       <TableCell
                         cell={cell}
                         className={cn(
-                          "border-table-border h-8 px-2 py-1 align-middle [&:not(:last-child)]:border-r",
-                          cell.column.getIsPinned() &&
-                            "bg-table group-hover/tableRow:!bg-table-accent group-data-[selected=true]/tableRow:!bg-table-primary group-data-[even=true]/tableRow:bg-table-secondary",
+                          "[&:not(:last-child)]:border-r",
+                          cell.column.getIsPinned() && "bg-background",
                         )}
                       />
                     )}

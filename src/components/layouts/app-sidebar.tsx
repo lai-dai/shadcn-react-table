@@ -17,6 +17,7 @@ import {
   SidebarMenuSubButton,
   useSidebar,
   SidebarSeparator,
+  SidebarGroupLabel,
 } from "~/components/ui/sidebar"
 import {
   Collapsible,
@@ -32,6 +33,7 @@ interface MenuItem {
   title?: string
   url?: string
   separator?: boolean
+  label?: string
 }
 
 const Menu: MenuItem[] = [
@@ -41,12 +43,32 @@ const Menu: MenuItem[] = [
     url: "/",
     children: [
       {
+        label: "My Table",
+      },
+      {
+        title: "My Table",
+        url: "/",
+      },
+      {
+        label: "Shadcn",
+      },
+      {
         title: "Shadcn Table",
         url: "/shadcn-table",
       },
       {
-        title: "Base Table",
-        url: "/",
+        label: "Original",
+      },
+      {
+        title: "React Table",
+        url: "/origin",
+      },
+      {
+        label: "Styles",
+      },
+      {
+        title: "React Table 01",
+        url: "/style-01",
       },
     ],
   },
@@ -58,7 +80,7 @@ export function AppSidebar() {
   return (
     <Sidebar
       collapsible={isMobile ? undefined : "none"}
-      className="sticky top-0 h-screen">
+      className="sticky top-0 z-10 h-screen border-r">
       <SidebarHeader className="h-16 justify-center px-6">
         <h1>
           <Link
@@ -78,8 +100,8 @@ export function AppSidebar() {
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu>
-                {Menu.map(item => (
-                  <Tree key={item?.title} {...item} />
+                {Menu.map((it, idx) => (
+                  <Tree key={idx} {...it} />
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>
@@ -96,6 +118,10 @@ function Tree({ isSubMenu, ...props }: MenuItem & { isSubMenu?: boolean }) {
 
   if (props.separator) {
     return <SidebarSeparator />
+  }
+
+  if (props.label) {
+    return <SidebarGroupLabel>{props.label}</SidebarGroupLabel>
   }
 
   const handleActive = (url?: string) => {
