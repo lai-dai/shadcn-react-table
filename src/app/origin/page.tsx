@@ -2,7 +2,7 @@ import { type Metadata } from "next"
 import { OriginReactTableDemo } from "~/components/tables/react-table-origin"
 
 export const metadata: Metadata = {
-  title: "React Table Style 01",
+  title: "React Table",
 }
 
 export default function Page() {

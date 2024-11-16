@@ -24,7 +24,7 @@ export default function RootLayout({
       <body>
         <Providers>
           <div className="container mx-auto border-x">
-            <SidebarProvider className="block">
+            <SidebarProvider defaultOpen={false} className="block">
               <AppSidebar />
 
               <SidebarInset className="md:pl-[--sidebar-width]">

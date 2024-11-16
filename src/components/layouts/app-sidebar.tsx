@@ -51,14 +51,11 @@ const Menu: MenuItem[] = [
         url: "/",
       },
       {
-        label: "Shadcn",
+        label: "Original",
       },
       {
         title: "Shadcn Table",
         url: "/shadcn-table",
-      },
-      {
-        label: "Original",
       },
       {
         title: "React Table",
@@ -146,7 +143,7 @@ function Tree({ isSubMenu, ...props }: MenuItem & { isSubMenu?: boolean }) {
         asChild
         tooltip={props.title}
         title={props.title}>
-        <Link href={props.url ?? "#"} prefetch>
+        <Link href={props.url ?? "#"}>
           {!isSubMenu && (props.icon ? <props.icon /> : null)}
 
           <span className="grow truncate leading-5">{props.title}</span>
