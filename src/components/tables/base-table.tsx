@@ -24,6 +24,7 @@ import {
 import { cn } from "~/lib/utils"
 
 interface BaseTableProps<T extends RowData> {
+  className?: string
   columns: ColumnDef<T>[]
   data: T[]
   ExpandedComponent?: ComponentProps<typeof TableExpandedRow>["children"]
@@ -31,13 +32,18 @@ interface BaseTableProps<T extends RowData> {
 }
 
 export function BaseTable<T>({
+  className,
   columns,
   data,
   ExpandedComponent,
   options,
 }: BaseTableProps<T>) {
   return (
-    <div className="w-full overflow-auto border-table-border border-y">
+    <div
+      className={cn(
+        "border-table-border w-full overflow-auto border",
+        className,
+      )}>
       <ReactTable data={data} columns={columns} options={options}>
         <Table className="bg-table text-table-foreground text-sm">
           <TableHeader className="bg-table border-table-border border-b">
@@ -47,7 +53,7 @@ export function BaseTable<T>({
                   <TableHead
                     header={header}
                     className={cn(
-                      "border-table-border hover:bg-table-accent hover:text-table-accent-foreground h-8 border-x px-2 py-1 text-left",
+                      "border-table-border hover:bg-table-accent hover:text-table-accent-foreground h-8 px-2 py-1 text-left [&:not(:last-child)]:border-r",
                       header.column.getIsPinned() &&
                         "bg-table text-table-foreground",
                     )}
@@ -68,7 +74,7 @@ export function BaseTable<T>({
                       <TableCell
                         cell={cell}
                         className={cn(
-                          "border-table-border h-8 border-x px-2 py-1 align-middle",
+                          "border-table-border h-8 px-2 py-1 align-middle [&:not(:last-child)]:border-r",
                           cell.column.getIsPinned() &&
                             "bg-table group-hover/tableRow:!bg-table-accent group-data-[selected=true]/tableRow:!bg-table-primary group-data-[even=true]/tableRow:bg-table-secondary",
                         )}
