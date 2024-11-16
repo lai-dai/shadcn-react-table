@@ -21,7 +21,7 @@ const config = {
       },
     ],
     "@typescript-eslint/no-unused-vars": [
-      "warn",
+      "error",
       {
         argsIgnorePattern: "^_",
       },
@@ -35,13 +35,25 @@ const config = {
         },
       },
     ],
-
-    //
     "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/no-redundant-type-constituents": "off",
     "@typescript-eslint/no-unsafe-return": "off",
     "@typescript-eslint/no-unsafe-call": "off",
-    "@typescript-eslint/no-unsafe-member-access": "off"
+    "@typescript-eslint/no-unsafe-member-access": "off",
+
+    // Import rules
+    "no-restricted-imports": [
+      "error",
+      {
+        patterns: [
+          {
+            group: ["../*", "../**/*"],
+            message:
+              'Use absolute imports with the "~" alias instead of relative imports.',
+          },
+        ],
+      },
+    ],
   },
-};
-module.exports = config;
+}
+module.exports = config

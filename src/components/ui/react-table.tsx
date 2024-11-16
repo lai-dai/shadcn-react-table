@@ -384,9 +384,9 @@ function getCellDefaultStyles<T extends RowData>(
     isPinned === "right" && column.getIsFirstColumn("right")
   return {
     boxShadow: isLastLeftPinnedColumn
-      ? "-3px 0 3px -3px hsl(var(--border)) inset"
+      ? "-3px 0 3px -3px hsl(var(--table-border)) inset"
       : isFirstRightPinnedColumn
-        ? "3px 0 3px -3px hsl(var(--border)) inset"
+        ? "3px 0 3px -3px hsl(var(--table-border)) inset"
         : undefined,
     left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
     right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,

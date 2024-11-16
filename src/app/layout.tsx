@@ -6,6 +6,7 @@ import { Providers } from "~/app/providers"
 import { AppSidebar } from "~/components/layouts/app-sidebar"
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar"
 import { AppHeader } from "~/components/layouts/app-header"
+import { PageContainer } from "~/components/layouts/page-container"
 
 export const metadata: Metadata = {
   title: "Shadcn React Table",
@@ -23,17 +24,15 @@ export default function RootLayout({
       suppressHydrationWarning>
       <body>
         <Providers>
-          <div className="container mx-auto">
-            <SidebarProvider>
-              <AppSidebar />
+          <SidebarProvider>
+            <AppSidebar />
 
-              <SidebarInset className="bg-lightgray dark:bg-dark grow">
-                <AppHeader />
+            <SidebarInset className="bg-lightgray dark:bg-dark grow">
+              <AppHeader />
 
-                {children}
-              </SidebarInset>
-            </SidebarProvider>
-          </div>
+              <PageContainer>{children}</PageContainer>
+            </SidebarInset>
+          </SidebarProvider>
         </Providers>
       </body>
     </html>

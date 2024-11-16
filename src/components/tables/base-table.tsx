@@ -37,8 +37,8 @@ export function BaseTable<T>({
   options,
 }: BaseTableProps<T>) {
   return (
-    <ReactTable data={data} columns={columns} options={options}>
-      <div className="border-table-border max-h-96 w-full overflow-auto border-y">
+    <div className="w-full overflow-auto border-table-border border-y">
+      <ReactTable data={data} columns={columns} options={options}>
         <Table className="bg-table text-table-foreground text-sm">
           <TableHeader className="bg-table border-table-border border-b">
             {headerGroup => (
@@ -84,7 +84,7 @@ export function BaseTable<T>({
             </TableRowsTrack>
           </TableBody>
         </Table>
-      </div>
-    </ReactTable>
+      </ReactTable>
+    </div>
   )
 }

@@ -98,3 +98,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  @apply size-3
+}
+
+*::-webkit-scrollbar-track {
+  @apply bg-background
+}
+
+*::-webkit-scrollbar-thumb {
+  @apply bg-border
+}
