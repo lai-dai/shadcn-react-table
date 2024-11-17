@@ -30,14 +30,12 @@ export function OriginReactTableDemo() {
           />
         ),
         cell: ({ row }) => (
-          <div className="flex justify-center">
-            <Checkbox
-              checked={row.getIsSelected()}
-              onCheckedChange={value => row.toggleSelected(!!value)}
-              aria-label="Select row"
-              className="translate-y-0.5"
-            />
-          </div>
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={value => row.toggleSelected(!!value)}
+            aria-label="Select row"
+            className="translate-y-0.5"
+          />
         ),
         enableSorting: false,
         enableHiding: false,
@@ -53,13 +51,13 @@ export function OriginReactTableDemo() {
         accessorKey: "firstName",
       },
       {
+        header: "lastName",
+        accessorKey: "lastName",
+      },
+      {
         header: "age",
         accessorKey: "age",
         size: 50,
-      },
-      {
-        header: "lastName",
-        accessorKey: "lastName",
       },
       {
         header: "progress",

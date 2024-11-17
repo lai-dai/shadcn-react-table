@@ -51,13 +51,13 @@ export function MyReactTableDemo() {
         accessorKey: "firstName",
       },
       {
+        header: "lastName",
+        accessorKey: "lastName",
+      },
+      {
         header: "age",
         accessorKey: "age",
         size: 50,
-      },
-      {
-        header: "lastName",
-        accessorKey: "lastName",
       },
       {
         header: "progress",

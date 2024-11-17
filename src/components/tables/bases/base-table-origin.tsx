@@ -41,38 +41,21 @@ export function BaseTableOrigin<T>({
   return (
     <div className={cn("w-full overflow-auto rounded-md border", className)}>
       <ReactTable data={data} columns={columns} options={options}>
-        <Table className="bg-background">
-          <TableHeader className="sticky top-0 z-10 border-b bg-background shadow-[0px_-3px_3px_-3px_hsl(var(--table-border))_inset]">
+        <Table>
+          <TableHeader>
             {headerGroup => (
               <TableHeaderRow headerGroup={headerGroup}>
-                {header => (
-                  <TableHead
-                    header={header}
-                    className={cn(
-                      "border-r",
-                      header.column.getIsPinned() &&
-                        "bg-background text-foreground",
-                    )}
-                  />
-                )}
+                {header => <TableHead header={header} />}
               </TableHeaderRow>
             )}
           </TableHeader>
 
-          <TableBody className="border-b">
+          <TableBody>
             <TableRowsTrack>
               {row => (
                 <Fragment>
                   <TableRow row={row}>
-                    {cell => (
-                      <TableCell
-                        cell={cell}
-                        className={cn(
-                          "border-r",
-                          cell.column.getIsPinned() && "bg-background",
-                        )}
-                      />
-                    )}
+                    {cell => <TableCell cell={cell} />}
                   </TableRow>
 
                   <TableExpandedRow row={row}>

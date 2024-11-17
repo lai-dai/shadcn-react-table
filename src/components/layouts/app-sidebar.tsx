@@ -160,7 +160,7 @@ function Tree({ isSubMenu, ...props }: MenuItem & { isSubMenu?: boolean }) {
         defaultOpen
         className="group/collapsible [&[data-state=open]>button>svg:last-child]:rotate-90">
         <CollapsibleTrigger asChild>
-          <SidebarMenuButton tooltip={props?.title} title={props?.title}>
+          <SidebarMenuButton title={props?.title}>
             {!isSubMenu && (props?.icon ? <props.icon /> : null)}
 
             <span className="grow truncate leading-5">{props?.title}</span>

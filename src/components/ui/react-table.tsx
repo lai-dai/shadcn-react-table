@@ -79,7 +79,7 @@ const Table = React.forwardRef<HTMLTableElement, TableProps<RowData>>(
           minWidth: table.getTotalSize(),
           ...style,
         }}
-        className={cn("w-full border-collapse", className)}
+        className={cn("w-full border-collapse bg-background", className)}
         {...props}>
         {children instanceof Function ? children(table) : children}
       </table>
@@ -99,10 +99,16 @@ interface TableHeaderProps<T extends RowData>
 const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
   TableHeaderProps<RowData>
->(({ children, ...props }, ref) => {
+>(({ children, className, ...props }, ref) => {
   const table = useReactTableContext()
   return (
-    <thead ref={ref} {...props}>
+    <thead
+      ref={ref}
+      className={cn(
+        "sticky top-0 z-10 border-b bg-background shadow-[0px_-3px_3px_-3px_hsl(var(--table-border))_inset]",
+        className,
+      )}
+      {...props}>
       {children instanceof Function
         ? table
             .getHeaderGroups()
@@ -169,7 +175,7 @@ interface TableHeadProps<T extends RowData>
 const TableHead = React.forwardRef<
   HTMLTableCellElement,
   TableHeadProps<RowData>
->(({ header, style, ...props }, ref) => {
+>(({ header, style, className, ...props }, ref) => {
   if (!header) {
     return null
   }
@@ -177,8 +183,9 @@ const TableHead = React.forwardRef<
     <th
       ref={ref}
       colSpan={header.column.getIsPinned() ? 0 : header.colSpan}
-      data-pinned={header.column.getIsPinned()}
-      style={getCellDefaultStyles(header.column, style)}
+      data-pinned={!!header.column.getIsPinned()}
+      style={cellDefaultStyles(header.column, style)}
+      className={cn("border-r data-[pinned=true]:bg-background", className)}
       {...props}>
       {header.isPlaceholder
         ? null
@@ -197,10 +204,10 @@ interface TableBodyProps<T extends RowData>
 const TableBody = React.forwardRef<
   HTMLTableSectionElement,
   TableBodyProps<RowData>
->(({ children, ...props }, ref) => {
+>(({ children, className, ...props }, ref) => {
   const table = useReactTableContext()
   return (
-    <tbody ref={ref} {...props}>
+    <tbody ref={ref} className={cn("border-b", className)} {...props}>
       {children instanceof Function
         ? table
             .getRowModel()
@@ -308,15 +315,16 @@ interface TableCellProps<T extends RowData>
 const TableCell = React.forwardRef<
   HTMLTableCellElement,
   TableCellProps<RowData>
->(({ cell, style, ...props }, ref) => {
+>(({ cell, style, className, ...props }, ref) => {
   if (!cell) {
     return null
   }
   return (
     <td
       ref={ref}
-      style={getCellDefaultStyles(cell.column, style)}
-      data-pinned={cell.column.getIsPinned()}
+      data-pinned={!!cell.column.getIsPinned()}
+      style={cellDefaultStyles(cell.column, style)}
+      className={cn("border-r px-2 data-[pinned]:bg-background", className)}
       {...props}>
       {flexRender(cell.column.columnDef.cell, cell.getContext())}
     </td>
@@ -366,35 +374,35 @@ const TableCaption = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <caption
     ref={ref}
-    className={cn("mt-3 text-sm text-muted-foreground", className)}
+    className={cn("text-sm text-muted-foreground", className)}
     {...props}
   />
 ))
 
 TableCaption.displayName = "TableCaption"
 
-function getCellDefaultStyles<T extends RowData>(
+function cellDefaultStyles<T extends RowData>(
   column: Column<T>,
   style?: React.CSSProperties,
 ) {
   const isPinned = column.getIsPinned()
-  const isLastLeftPinnedColumn =
-    isPinned === "left" && column.getIsLastColumn("left")
   const isFirstRightPinnedColumn =
     isPinned === "right" && column.getIsFirstColumn("right")
+  const isLastLeftPinnedColumn =
+    isPinned === "left" && column.getIsLastColumn("left")
   return {
-    boxShadow: isLastLeftPinnedColumn
-      ? "-3px 0 3px -3px hsl(var(--table-border)) inset"
-      : isFirstRightPinnedColumn
-        ? "3px 0 3px -3px hsl(var(--table-border)) inset"
+    boxShadow: isFirstRightPinnedColumn
+      ? "3px 0 3px -3px hsl(var(--table-border)) inset"
+      : isLastLeftPinnedColumn
+        ? "-3px 0 3px -3px hsl(var(--table-border)) inset"
         : undefined,
-    left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
-    right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
-    position: isPinned ? "sticky" : undefined,
-    zIndex: isPinned ? 1 : undefined,
-    width: column.getSize() || undefined,
-    minWidth: column.columnDef.minSize ?? undefined,
+    left: isPinned === "left" ? column.getStart("left") : undefined,
     maxWidth: column.columnDef.maxSize ?? undefined,
+    minWidth: column.columnDef.minSize ?? undefined,
+    position: isPinned ? "sticky" : undefined,
+    right: isPinned === "right" ? column.getAfter("right") : undefined,
+    width: column.getSize() || undefined,
+    zIndex: isPinned ? 1 : undefined,
     ...style,
   } as React.CSSProperties
 }
