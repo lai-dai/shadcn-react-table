@@ -39,7 +39,7 @@ export function BaseTableOrigin<T>({
   options,
 }: BaseOriginTableProps<T>) {
   return (
-    <div className={cn("w-full overflow-auto rounded-md border", className)}>
+    <div className={cn("w-full overflow-auto rounded-md border border-table-border", className)}>
       <ReactTable data={data} columns={columns} options={options}>
         <Table>
           <TableHeader>

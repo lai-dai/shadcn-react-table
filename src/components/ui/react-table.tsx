@@ -79,7 +79,10 @@ const Table = React.forwardRef<HTMLTableElement, TableProps<RowData>>(
           minWidth: table.getTotalSize(),
           ...style,
         }}
-        className={cn("w-full border-collapse bg-background", className)}
+        className={cn(
+          "w-full border-collapse bg-table text-sm text-table-foreground",
+          className,
+        )}
         {...props}>
         {children instanceof Function ? children(table) : children}
       </table>
@@ -105,7 +108,7 @@ const TableHeader = React.forwardRef<
     <thead
       ref={ref}
       className={cn(
-        "sticky top-0 z-10 border-b bg-background shadow-[0px_-3px_3px_-3px_hsl(var(--table-border))_inset]",
+        "sticky top-0 z-10 border-b bg-table shadow-[0px_-3px_3px_-3px_hsl(var(--table-border))_inset]",
         className,
       )}
       {...props}>
@@ -184,8 +187,11 @@ const TableHead = React.forwardRef<
       ref={ref}
       colSpan={header.column.getIsPinned() ? 0 : header.colSpan}
       data-pinned={!!header.column.getIsPinned()}
-      style={cellDefaultStyles(header.column, style)}
-      className={cn("border-r data-[pinned=true]:bg-background", className)}
+      style={defaultCellStyles(header.column, style)}
+      className={cn(
+        "border-r border-table-border px-2 py-1.5 text-left hover:!bg-table-accent hover:text-table-accent-foreground data-[pinned=true]:bg-table",
+        className,
+      )}
       {...props}>
       {header.isPlaceholder
         ? null
@@ -207,7 +213,10 @@ const TableBody = React.forwardRef<
 >(({ children, className, ...props }, ref) => {
   const table = useReactTableContext()
   return (
-    <tbody ref={ref} className={cn("border-b", className)} {...props}>
+    <tbody
+      ref={ref}
+      className={cn("border-b border-table-border", className)}
+      {...props}>
       {children instanceof Function
         ? table
             .getRowModel()
@@ -246,7 +255,7 @@ interface TableRowProps<T extends RowData>
 }
 
 const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps<RowData>>(
-  ({ row, children, ...props }, ref) => {
+  ({ row, children, className, ...props }, ref) => {
     return (
       <tr
         ref={ref}
@@ -254,6 +263,10 @@ const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps<RowData>>(
         data-even={
           typeof row?.index === "number" ? row?.index % 2 !== 0 : false
         }
+        className={cn(
+          "group/tableRow hover:bg-table-accent hover:text-table-accent-foreground data-[even=true]:bg-table-secondary data-[selected=true]:bg-table-primary data-[even=true]:text-table-secondary-foreground data-[selected=true]:text-table-primary-foreground",
+          className,
+        )}
         {...props}>
         {children instanceof Function
           ? row
@@ -323,8 +336,11 @@ const TableCell = React.forwardRef<
     <td
       ref={ref}
       data-pinned={!!cell.column.getIsPinned()}
-      style={cellDefaultStyles(cell.column, style)}
-      className={cn("border-r px-2 data-[pinned]:bg-background", className)}
+      style={defaultCellStyles(cell.column, style)}
+      className={cn(
+        "border-r border-table-border px-2 group-hover/tableRow:border-table-secondary group-hover/tableRow:!bg-table-accent data-[pinned=true]:bg-table group-data-[even=true]/tableRow:bg-table-secondary group-data-[selected=true]/tableRow:!bg-table-primary group-data-[selected=true]/tableRow:!text-table-primary-foreground py-1",
+        className,
+      )}
       {...props}>
       {flexRender(cell.column.columnDef.cell, cell.getContext())}
     </td>
@@ -381,7 +397,7 @@ const TableCaption = React.forwardRef<
 
 TableCaption.displayName = "TableCaption"
 
-function cellDefaultStyles<T extends RowData>(
+function defaultCellStyles<T extends RowData>(
   column: Column<T>,
   style?: React.CSSProperties,
 ) {

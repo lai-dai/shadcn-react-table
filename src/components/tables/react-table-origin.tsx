@@ -39,7 +39,7 @@ export function OriginReactTableDemo() {
         ),
         enableSorting: false,
         enableHiding: false,
-        maxSize: 34,
+        maxSize: 32,
       },
       {
         header: "id",

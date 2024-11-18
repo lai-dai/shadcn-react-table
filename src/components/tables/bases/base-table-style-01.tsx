@@ -41,45 +41,25 @@ export function BaseTableStyle01<T>({
   return (
     <div
       className={cn(
-        "border-table-border w-full overflow-auto border",
+        "w-full overflow-auto border border-table-border style-01",
         className,
       )}>
       <ReactTable data={data} columns={columns} options={options}>
-        <Table className="bg-table text-table-foreground text-sm">
-          <TableHeader className="bg-table border-table-border border-b">
+        <Table>
+          <TableHeader>
             {headerGroup => (
               <TableHeaderRow headerGroup={headerGroup}>
-                {header => (
-                  <TableHead
-                    header={header}
-                    className={cn(
-                      "border-table-border hover:bg-table-accent hover:text-table-accent-foreground h-8 px-2 py-1 text-left [&:not(:last-child)]:border-r",
-                      header.column.getIsPinned() &&
-                        "bg-table text-table-foreground",
-                    )}
-                  />
-                )}
+                {header => <TableHead header={header} />}
               </TableHeaderRow>
             )}
           </TableHeader>
 
-          <TableBody className="border-table-border border-b">
+          <TableBody>
             <TableRowsTrack>
               {row => (
                 <Fragment>
-                  <TableRow
-                    row={row}
-                    className="group/tableRow data-[selected=true]:bg-table-primary data-[selected=true]:text-table-primary-foreground even:bg-table-secondary hover:bg-table-accent hover:text-table-accent-foreground">
-                    {cell => (
-                      <TableCell
-                        cell={cell}
-                        className={cn(
-                          "border-table-border h-8 px-2 py-1 align-middle [&:not(:last-child)]:border-r",
-                          cell.column.getIsPinned() &&
-                            "bg-table group-hover/tableRow:!bg-table-accent group-data-[selected=true]/tableRow:!bg-table-primary group-data-[even=true]/tableRow:bg-table-secondary",
-                        )}
-                      />
-                    )}
+                  <TableRow row={row}>
+                    {cell => <TableCell cell={cell} />}
                   </TableRow>
 
                   <TableExpandedRow row={row}>

@@ -27,6 +27,7 @@ import {
 } from "~/components/ui/collapsible"
 import { useIsMobile } from "~/hooks/use-mobile"
 import { ScrollArea } from "~/components/ui/scroll-area"
+import { PortfolioLink } from "./portfolio-link"
 
 interface MenuItem {
   children?: MenuItem[]
@@ -79,7 +80,7 @@ export function AppSidebar() {
     <Sidebar
       collapsible={isMobile ? undefined : "none"}
       className="fixed top-0 z-10 h-screen border-r">
-      <SidebarHeader className="h-16 justify-center px-6">
+      <SidebarHeader className="h-16 justify-center px-4">
         <h1>
           <Link
             href={"https://ui.shadcn.com/"}
@@ -107,7 +108,11 @@ export function AppSidebar() {
         </ScrollArea>
       </SidebarContent>
 
-      <SidebarFooter className="h-16" />
+      <SidebarFooter className="h-16 justify-center px-4">
+        <div>
+          <PortfolioLink />
+        </div>
+      </SidebarFooter>
     </Sidebar>
   )
 }
