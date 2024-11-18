@@ -1,87 +1,55 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "~/components/ui/table"
-
-const invoices = [
-  {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-]
+import { Persons100 } from "~/data/person-100"
+import { format } from "date-fns"
+import { Button } from "~/components/ui/button"
+import { Edit2 } from "lucide-react"
 
 export function ShadcnTableDemo() {
   return (
-    <Table>
-      <TableCaption>A list of your recent invoices.</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px]">Invoice</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Method</TableHead>
-          <TableHead className="text-right">Amount</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {invoices.map(invoice => (
-          <TableRow key={invoice.invoice}>
-            <TableCell className="font-medium">{invoice.invoice}</TableCell>
-            <TableCell>{invoice.paymentStatus}</TableCell>
-            <TableCell>{invoice.paymentMethod}</TableCell>
-            <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+    <div className="w-full overflow-auto max-h-[72vh] min-h-96">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>ID</TableHead>
+            <TableHead>firstName</TableHead>
+            <TableHead>lastName</TableHead>
+            <TableHead>age</TableHead>
+            <TableHead>progress</TableHead>
+            <TableHead>status</TableHead>
+            <TableHead>visits</TableHead>
+            <TableHead>Act</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-      <TableFooter>
-        <TableRow>
-          <TableCell colSpan={3}>Total</TableCell>
-          <TableCell className="text-right">$2,500.00</TableCell>
-        </TableRow>
-      </TableFooter>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {Persons100.map(it => (
+            <TableRow key={it.id}>
+              <TableCell>{it.firstName}</TableCell>
+              <TableCell>{it.lastName}</TableCell>
+              <TableCell>{it.age}</TableCell>
+              <TableCell>{it.progress}</TableCell>
+              <TableCell>{it.status}</TableCell>
+              <TableCell>{it.visits}</TableCell>
+              <TableCell>
+                {format(new Date(it.createdAt), "dd/MM/yyyy, HH:mm")}
+              </TableCell>
+              <TableCell>
+                <div className="flex justify-center">
+                  <Button size="icon" variant="ghost" className="size-7">
+                    <Edit2 />
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   )
 }

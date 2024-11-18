@@ -45,22 +45,15 @@ const Menu: MenuItem[] = [
     url: "/",
     children: [
       {
-        label: "My Table",
-      },
-      {
-        title: "My Table",
-        url: "/",
-      },
-      {
         label: "Original",
+      },
+      {
+        title: "React Table",
+        url: "/",
       },
       {
         title: "Shadcn Table",
         url: "/shadcn-table",
-      },
-      {
-        title: "React Table",
-        url: "/origin",
       },
       {
         label: "Styles",
