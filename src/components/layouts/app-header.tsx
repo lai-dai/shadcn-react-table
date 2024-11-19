@@ -13,14 +13,6 @@ import { usePathname } from "next/navigation"
 import { GithubLink } from "./github-link"
 
 export function AppHeader() {
-  const [title, setTitle] = useState("")
-
-  const pathname = usePathname()
-
-  useEffect(() => {
-    setTitle(document.title)
-  }, [pathname])
-
   const [isSticky, setIsSticky] = useState(false)
 
   useEffect(() => {
@@ -47,13 +39,6 @@ export function AppHeader() {
       }>
       <div>
         <SidebarTrigger className="md:hidden" />
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbPage>{title}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
       </div>
 
       <div className="flex items-center gap-3">

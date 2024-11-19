@@ -118,20 +118,16 @@
   * {
     @apply border-border;
   }
+  html {
+    @apply scroll-smooth
+  }
   body {
     @apply bg-background text-foreground;
   }
 }
 
-/* Chrome, Edge, and Safari */
-*::-webkit-scrollbar {
-  @apply size-3
-}
-
-*::-webkit-scrollbar-track {
-  @apply bg-transparent
-}
-
-*::-webkit-scrollbar-thumb {
-  @apply bg-border
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) transparent;;
 }

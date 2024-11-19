@@ -1,5 +1,5 @@
 import { type Metadata } from "next"
-import { ReactTableStyle01Demo } from "~/components/tables/react-table-style-01"
+import { ReactTableS01Demo } from "~/components/tables/examples/react-table-s01"
 
 export const metadata: Metadata = {
   title: "React Table Style 01",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <div className="p-3 md:p-6">
-      <ReactTableStyle01Demo />
+      <ReactTableS01Demo />
     </div>
   )
 }

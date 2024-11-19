@@ -31,7 +31,7 @@ interface BaseOriginTableProps<T extends RowData> {
   options?: Omit<TableOptions<T>, "data" | "columns" | "getCoreRowModel">
 }
 
-export function BaseTableOrigin<T>({
+export function BaseReactTable<T>({
   className,
   columns,
   data,

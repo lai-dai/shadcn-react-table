@@ -1,5 +1,5 @@
 import { type Metadata } from "next"
-import { ShadcnTableDemo } from "~/components/tables/table-shadcn"
+import { ShadcnTableDemo } from "~/components/tables/examples/table-shadcn"
 
 export const metadata: Metadata = {
   title: "Shadcn Table",

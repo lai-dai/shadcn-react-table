@@ -2,17 +2,16 @@
 
 import { type RowSelectionState } from "@tanstack/react-table"
 import { useState } from "react"
-import { BaseTableOrigin } from "~/components/tables/bases/base-table-origin"
 import { Persons100 } from "~/data/person-100"
-import { type IPerson } from "~/lib/make-data"
-import { columns } from "./columns"
+import { columns } from "~/components/tables/columns"
+import { BaseReactTable } from "~/components/tables/bases/base-react-table"
 
-export function ReactTableOriginDemo() {
-  const [data] = useState<IPerson[]>(Persons100)
+export function ReactTableS01Demo() {
+  const [data] = useState(Persons100)
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
 
   return (
-    <BaseTableOrigin
+    <BaseReactTable
       columns={columns}
       data={data}
       options={{
@@ -26,7 +25,7 @@ export function ReactTableOriginDemo() {
         },
         onRowSelectionChange: setRowSelection,
       }}
-      className="max-h-[72vh] min-h-96"
+      className="max-h-[72vh] min-h-96 style-01 rounded-none"
     />
   )
 }
