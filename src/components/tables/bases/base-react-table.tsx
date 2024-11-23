@@ -1,69 +1,47 @@
 "use client"
 
-import { type ComponentProps, Fragment } from "react"
-
-import {
-  type RowData,
-  type ColumnDef,
-  type TableOptions,
-} from "@tanstack/react-table"
+import { type RowData } from "@tanstack/react-table"
 
 import {
   ReactTable,
+  type ReactTableProps,
   Table,
   TableBody,
   TableCell,
-  TableExpandedRow,
   TableHead,
   TableHeader,
-  TableHeaderRow,
+  TableHeadGroup,
   TableRow,
-  TableRowsTrack,
 } from "~/components/ui/react-table"
 
 import { cn } from "~/lib/utils"
 
-interface BaseOriginTableProps<T extends RowData> {
+interface BaseOriginTableProps<T extends RowData> extends ReactTableProps<T> {
   className?: string
-  columns: ColumnDef<T>[]
-  data: T[]
-  ExpandedComponent?: ComponentProps<typeof TableExpandedRow>["children"]
-  options?: Omit<TableOptions<T>, "data" | "columns" | "getCoreRowModel">
 }
 
 export function BaseReactTable<T>({
   className,
-  columns,
-  data,
-  ExpandedComponent,
-  options,
+  ...props
 }: BaseOriginTableProps<T>) {
   return (
-    <div className={cn("w-full overflow-auto rounded-md border border-table-border", className)}>
-      <ReactTable data={data} columns={columns} options={options}>
+    <div
+      className={cn(
+        "w-full overflow-auto rounded-md border border-table-border",
+        className,
+      )}>
+      <ReactTable {...props}>
         <Table>
           <TableHeader>
-            {headerGroup => (
-              <TableHeaderRow headerGroup={headerGroup}>
-                {header => <TableHead header={header} />}
-              </TableHeaderRow>
-            )}
+            <TableHeadGroup>
+              <TableHead />
+            </TableHeadGroup>
           </TableHeader>
 
           <TableBody>
-            <TableRowsTrack>
-              {row => (
-                <Fragment>
-                  <TableRow row={row}>
-                    {cell => <TableCell cell={cell} />}
-                  </TableRow>
-
-                  <TableExpandedRow row={row}>
-                    {ExpandedComponent}
-                  </TableExpandedRow>
-                </Fragment>
-              )}
-            </TableRowsTrack>
+            <TableRow>
+              <TableCell />
+            </TableRow>
           </TableBody>
         </Table>
       </ReactTable>

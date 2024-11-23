@@ -14,18 +14,16 @@ export function ReactTableS01Demo() {
     <BaseReactTable
       columns={columns}
       data={data}
-      options={{
-        initialState: {
-          columnPinning: {
-            right: ["actions"],
-          },
+      initialState={{
+        columnPinning: {
+          right: ["actions"],
         },
-        state: {
-          rowSelection,
-        },
-        onRowSelectionChange: setRowSelection,
       }}
-      className="max-h-[72vh] min-h-96 style-01 rounded-none"
+      state={{
+        rowSelection,
+      }}
+      onRowSelectionChange={setRowSelection}
+      className="style-01 max-h-[72vh] min-h-96 rounded-none"
     />
   )
 }

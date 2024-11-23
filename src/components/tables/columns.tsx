@@ -47,7 +47,6 @@ export const columns:ColumnDef<IPerson>[] = [
     {
       header: "age",
       accessorKey: "age",
-      size: 50,
     },
     {
       header: "progress",

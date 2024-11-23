@@ -7,7 +7,6 @@ import {
   getCoreRowModel,
   type Cell,
   type Column,
-  type ColumnDef,
   type Header,
   type HeaderGroup,
   type Row,
@@ -19,18 +18,75 @@ import {
 
 import { cn } from "~/lib/utils"
 
+// Config
 declare module "@tanstack/react-table" {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ColumnMeta<TData extends RowData, TValue>
     extends Record<string, unknown> {
     columnName: string
   }
 }
 
-const ReactTableContext = React.createContext<ITable<RowData> | undefined>(
-  undefined,
+// utils
+type ChildrenRenderer<C, P> = C | ((props: P) => C)
+
+function rendererChildren<C extends React.ReactNode, P>(
+  children: ChildrenRenderer<C, P>,
+  props: P,
+) {
+  if (children instanceof Function) {
+    return children(props)
+  }
+  return children
+}
+
+function isReactFragment<E extends React.ReactElement>(element: E) {
+  if (element.type) {
+    return element.type === React.Fragment
+  }
+  return element instanceof React.Fragment
+}
+
+function clonerElement<E extends React.ReactElement, P>(element: E, props: P) {
+  if (React.isValidElement(element) && !isReactFragment(element)) {
+    return React.cloneElement(element, props as React.Attributes)
+  }
+  return element
+}
+
+function handleCellStyling<T extends RowData>(
+  column: Column<T>,
+  style?: React.CSSProperties,
+) {
+  const isPinned = column.getIsPinned()
+
+  return {
+    boxShadow: isPinned
+      ? isPinned === "right"
+        ? "3px 0 3px -3px hsl(var(--table-border)) inset"
+        : "-3px 0 3px -3px hsl(var(--table-border)) inset"
+      : undefined,
+    maxWidth:
+      column.columnDef.maxSize === Number.MAX_SAFE_INTEGER
+        ? undefined
+        : column.columnDef.maxSize,
+    minWidth: column.columnDef.minSize ?? undefined,
+    position: isPinned ? "sticky" : undefined,
+    right: isPinned === "right" ? column.getAfter("right") : undefined,
+    left: isPinned === "left" ? column.getStart("left") : undefined,
+    zIndex: isPinned ? 1 : undefined,
+    ...style,
+  } as React.CSSProperties
+}
+
+// React Table
+type ReactTableContextProps = ITable<RowData>
+
+const ReactTableContext = React.createContext<ReactTableContextProps | null>(
+  null,
 )
 
-function useReactTableContext<T extends RowData>() {
+export function useReactTableContext<T extends RowData>() {
   const context = React.useContext(ReactTableContext)
   if (!context) {
     throw new Error("useReactTableContext must be used within a ReactTable")
@@ -38,65 +94,49 @@ function useReactTableContext<T extends RowData>() {
   return context as ITable<T>
 }
 
-export interface ReactTableProps<T extends RowData> {
-  data: T[]
-  columns: ColumnDef<T, unknown>[]
-  options?: Omit<TableOptions<T>, "data" | "columns" | "getCoreRowModel">
-  children?: React.ReactNode | ((table: ITable<T>) => React.ReactNode)
+export interface ReactTableProps<T extends RowData>
+  extends Omit<TableOptions<T>, "getCoreRowModel"> {
+  children?: ChildrenRenderer<React.ReactNode, ITable<T>>
 }
 
-function ReactTable<T>({
-  options,
-  data,
-  columns,
-  children,
-}: ReactTableProps<T>) {
+function ReactTable<T>({ children, ...props }: ReactTableProps<T>) {
   const table = useReactTable({
-    ...options,
-    data,
-    columns,
+    ...props,
     getCoreRowModel: getCoreRowModel(),
   })
   return (
     <ReactTableContext.Provider value={table as ITable<RowData>}>
-      {children instanceof Function ? children(table) : children}
+      {rendererChildren(children, table)}
     </ReactTableContext.Provider>
   )
 }
 
 interface TableProps<T extends RowData>
   extends Omit<React.HTMLAttributes<HTMLTableElement>, "children"> {
-  children?: React.ReactNode | ((table: ITable<T>) => React.ReactNode)
+  children?: ChildrenRenderer<React.ReactNode, ITable<T>>
 }
 
 const Table = React.forwardRef<HTMLTableElement, TableProps<RowData>>(
-  ({ className, style, children, ...props }, ref) => {
+  ({ className, children, ...props }, ref) => {
     const table = useReactTableContext()
     return (
       <table
         ref={ref}
-        style={{
-          minWidth: table.getTotalSize(),
-          ...style,
-        }}
         className={cn(
           "w-full border-collapse bg-table text-sm text-table-foreground",
           className,
         )}
         {...props}>
-        {children instanceof Function ? children(table) : children}
+        {rendererChildren(children, table)}
       </table>
     )
   },
 )
-
 Table.displayName = "Table"
 
 interface TableHeaderProps<T extends RowData>
   extends Omit<React.HTMLAttributes<HTMLTableSectionElement>, "children"> {
-  children?:
-    | React.ReactElement
-    | ((headerGroup: HeaderGroup<T>) => React.ReactElement)
+  children?: ChildrenRenderer<React.ReactElement, HeaderGroup<T>>
 }
 
 const TableHeader = React.forwardRef<
@@ -112,63 +152,39 @@ const TableHeader = React.forwardRef<
         className,
       )}
       {...props}>
-      {children instanceof Function
-        ? table
-            .getHeaderGroups()
-            .map(headerGroup => (
-              <React.Fragment key={headerGroup.id}>
-                {children(headerGroup)}
-              </React.Fragment>
-            ))
-        : children}
+      {table.getHeaderGroups().map(headerGroup => (
+        <React.Fragment key={headerGroup.id}>
+          {clonerElement(rendererChildren(children, headerGroup)!, {
+            headerGroup,
+          })}
+        </React.Fragment>
+      ))}
     </thead>
   )
 })
-
 TableHeader.displayName = "TableHeader"
-
-interface TableHeaderRowsTrackProps<T extends RowData> {
-  children?: (headerGroup: HeaderGroup<T>) => React.ReactElement
-}
-
-function TableHeaderRowsTrack({
-  children,
-}: TableHeaderRowsTrackProps<RowData>) {
-  const table = useReactTableContext()
-  if (children instanceof Function) {
-    return table
-      .getHeaderGroups()
-      .map(headerGroup => (
-        <React.Fragment key={headerGroup.id}>
-          {children(headerGroup)}
-        </React.Fragment>
-      ))
-  }
-  return null
-}
 
 interface TableHeaderRow<T extends RowData>
   extends Omit<React.HTMLAttributes<HTMLTableRowElement>, "children"> {
   headerGroup?: HeaderGroup<T>
-  children?:
-    | React.ReactElement
-    | ((header: Header<T, unknown>) => React.ReactElement)
+  children?: ChildrenRenderer<React.ReactElement, Header<T, unknown>>
 }
 
-const TableHeaderRow = React.forwardRef<
+const TableHeadGroup = React.forwardRef<
   HTMLTableRowElement,
   TableHeaderRow<RowData>
 >(({ headerGroup, children, ...props }, ref) => (
   <tr ref={ref} {...props}>
-    {children instanceof Function
-      ? headerGroup?.headers.map(header => (
-          <React.Fragment key={header.id}>{children(header)}</React.Fragment>
-        ))
-      : children}
+    {headerGroup?.headers.map(header => (
+      <React.Fragment key={header.id}>
+        {clonerElement(rendererChildren(children, header)!, {
+          header,
+        })}
+      </React.Fragment>
+    ))}
   </tr>
 ))
-
-TableHeaderRow.displayName = "TableHeaderRow"
+TableHeadGroup.displayName = "TableHeadGroup"
 
 interface TableHeadProps<T extends RowData>
   extends React.ThHTMLAttributes<HTMLTableCellElement> {
@@ -187,7 +203,7 @@ const TableHead = React.forwardRef<
       ref={ref}
       colSpan={header.column.getIsPinned() ? 0 : header.colSpan}
       data-pinned={!!header.column.getIsPinned()}
-      style={defaultCellStyles(header.column, style)}
+      style={handleCellStyling(header.column, style)}
       className={cn(
         "border-r border-table-border px-2 py-1.5 text-left hover:!bg-table-accent hover:text-table-accent-foreground data-[pinned=true]:bg-table",
         className,
@@ -199,12 +215,11 @@ const TableHead = React.forwardRef<
     </th>
   )
 })
-
 TableHead.displayName = "TableHead"
 
 interface TableBodyProps<T extends RowData>
   extends Omit<React.HTMLAttributes<HTMLTableSectionElement>, "children"> {
-  children?: React.ReactNode | ((row: Row<T>) => React.ReactElement)
+  children?: ChildrenRenderer<React.ReactElement, Row<T>>
 }
 
 const TableBody = React.forwardRef<
@@ -217,41 +232,22 @@ const TableBody = React.forwardRef<
       ref={ref}
       className={cn("border-b border-table-border", className)}
       {...props}>
-      {children instanceof Function
-        ? table
-            .getRowModel()
-            .rows.map(row => (
-              <React.Fragment key={row.id}>{children(row)}</React.Fragment>
-            ))
-        : children}
+      {table.getRowModel().rows.map(row => (
+        <React.Fragment key={row.id}>
+          {clonerElement(rendererChildren(children, row)!, {
+            row,
+          })}
+        </React.Fragment>
+      ))}
     </tbody>
   )
 })
-
 TableBody.displayName = "TableBody"
-
-interface TableRowsTrackProps<T extends RowData> {
-  children?: (row: Row<T>) => React.ReactElement
-}
-
-function TableRowsTrack({ children }: TableRowsTrackProps<RowData>) {
-  const table = useReactTableContext()
-  if (children instanceof Function) {
-    return table
-      .getRowModel()
-      .rows.map(row => (
-        <React.Fragment key={row.id}>{children(row)}</React.Fragment>
-      ))
-  }
-  return null
-}
 
 interface TableRowProps<T extends RowData>
   extends Omit<React.HTMLAttributes<HTMLTableRowElement>, "children"> {
   row?: Row<T>
-  children?:
-    | React.ReactElement
-    | ((cell: Cell<T, unknown>) => React.ReactElement)
+  children?: ChildrenRenderer<React.ReactElement, Cell<T, unknown>>
 }
 
 const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps<RowData>>(
@@ -261,64 +257,25 @@ const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps<RowData>>(
         ref={ref}
         data-selected={row?.getIsSelected()}
         data-even={
-          typeof row?.index === "number" ? row?.index % 2 !== 0 : false
+          typeof row?.index === "number" ? row?.index % 2 !== 0 : undefined
         }
         className={cn(
           "group/tableRow hover:bg-table-accent hover:text-table-accent-foreground data-[even=true]:bg-table-secondary data-[selected=true]:bg-table-primary data-[even=true]:text-table-secondary-foreground data-[selected=true]:text-table-primary-foreground",
           className,
         )}
         {...props}>
-        {children instanceof Function
-          ? row
-              ?.getVisibleCells()
-              .map(cell => (
-                <React.Fragment key={cell.id}>{children(cell)}</React.Fragment>
-              ))
-          : children}
+        {row?.getVisibleCells().map(cell => (
+          <React.Fragment key={cell.id}>
+            {clonerElement(rendererChildren(children, cell)!, {
+              cell,
+            })}
+          </React.Fragment>
+        ))}
       </tr>
     )
   },
 )
-
 TableRow.displayName = "TableRow"
-
-interface TableExpandedRowProps<T extends RowData>
-  extends Omit<React.HTMLAttributes<HTMLTableRowElement>, "children"> {
-  row?: Row<T>
-  children?: React.ReactElement | ((row: Row<T>) => React.ReactElement)
-}
-
-const TableExpandedRow = React.forwardRef<
-  HTMLTableRowElement,
-  TableExpandedRowProps<RowData>
->(({ row, children, ...props }, ref) => {
-  if (row?.getIsExpanded()) {
-    return (
-      <tr ref={ref} {...props}>
-        <td colSpan={row?.getVisibleCells().length}>
-          {children instanceof Function ? row && children(row) : children}
-        </td>
-      </tr>
-    )
-  }
-  return null
-})
-
-TableExpandedRow.displayName = "TableExpandedRow"
-
-interface TableCellsTrackProps<T extends RowData> {
-  row?: Row<T>
-  children?: (row: Cell<T, unknown>) => React.ReactElement
-}
-
-function TableCellsTrack({ children, row }: TableCellsTrackProps<RowData>) {
-  if (children instanceof Function) {
-    return row?.getVisibleCells().map(cell => {
-      return <React.Fragment key={cell.id}>{children(cell)}</React.Fragment>
-    })
-  }
-  return null
-}
 
 interface TableCellProps<T extends RowData>
   extends React.TdHTMLAttributes<HTMLTableCellElement> {
@@ -336,9 +293,9 @@ const TableCell = React.forwardRef<
     <td
       ref={ref}
       data-pinned={!!cell.column.getIsPinned()}
-      style={defaultCellStyles(cell.column, style)}
+      style={handleCellStyling(cell.column, style)}
       className={cn(
-        "border-r border-table-border px-2 group-hover/tableRow:border-table-secondary group-hover/tableRow:!bg-table-accent data-[pinned=true]:bg-table group-data-[even=true]/tableRow:bg-table-secondary group-data-[selected=true]/tableRow:!bg-table-primary group-data-[selected=true]/tableRow:!text-table-primary-foreground py-1",
+        "border-r border-table-border px-2 py-1 group-hover/tableRow:border-table-secondary group-hover/tableRow:!bg-table-accent data-[pinned=true]:bg-table group-data-[even=true]/tableRow:bg-table-secondary group-data-[selected=true]/tableRow:!bg-table-primary group-data-[selected=true]/tableRow:!text-table-primary-foreground",
         className,
       )}
       {...props}>
@@ -346,39 +303,60 @@ const TableCell = React.forwardRef<
     </td>
   )
 })
-
 TableCell.displayName = "TableCell"
 
 interface TableCellFullProps<T extends RowData>
   extends Omit<React.TdHTMLAttributes<HTMLTableCellElement>, "children"> {
-  children?: React.ReactNode | ((table: ITable<T>) => React.ReactNode)
+  children?: ChildrenRenderer<React.ReactNode, ITable<T>>
 }
 
-const TableCellFullColSpan = React.forwardRef<
+const TableCellColSpanAll = React.forwardRef<
   HTMLTableCellElement,
   TableCellFullProps<RowData>
 >(({ children, ...props }, ref) => {
   const table = useReactTableContext()
   return (
     <td ref={ref} colSpan={table.getAllLeafColumns().length} {...props}>
-      {children instanceof Function ? children(table) : children}
+      {rendererChildren(children, table)}
     </td>
   )
 })
+TableCellColSpanAll.displayName = "TableCellColSpanAll"
 
-TableCellFullColSpan.displayName = "TableCellFull"
+interface TableExpandedRowProps<T extends RowData>
+  extends Omit<React.HTMLAttributes<HTMLTableRowElement>, "children"> {
+  row?: Row<T>
+  children?: ChildrenRenderer<React.ReactElement, Row<T>>
+}
+
+const TableRowExpanded = React.forwardRef<
+  HTMLTableRowElement,
+  TableExpandedRowProps<RowData>
+>(({ row, children, ...props }, ref) => {
+  if (row?.getIsExpanded()) {
+    return (
+      <tr ref={ref} {...props}>
+        <td colSpan={row?.getVisibleCells().length}>
+          {rendererChildren(children, row)}
+        </td>
+      </tr>
+    )
+  }
+  return null
+})
+TableRowExpanded.displayName = "TableRowExpanded"
 
 function TableRowsEmpty({
   children,
   ...props
-}: React.ComponentProps<typeof TableCellFullColSpan>) {
+}: React.ComponentProps<typeof TableCellColSpanAll>) {
   const table = useReactTableContext()
   return (
     table.getRowModel().rows.length === 0 && (
       <TableRow>
-        <TableCellFullColSpan {...props}>
-          {children instanceof Function ? children(table) : children}
-        </TableCellFullColSpan>
+        <TableCellColSpanAll {...props}>
+          {rendererChildren(children, table)}
+        </TableCellColSpanAll>
       </TableRow>
     )
   )
@@ -394,34 +372,7 @@ const TableCaption = React.forwardRef<
     {...props}
   />
 ))
-
 TableCaption.displayName = "TableCaption"
-
-function defaultCellStyles<T extends RowData>(
-  column: Column<T>,
-  style?: React.CSSProperties,
-) {
-  const isPinned = column.getIsPinned()
-  const isFirstRightPinnedColumn =
-    isPinned === "right" && column.getIsFirstColumn("right")
-  const isLastLeftPinnedColumn =
-    isPinned === "left" && column.getIsLastColumn("left")
-  return {
-    boxShadow: isFirstRightPinnedColumn
-      ? "3px 0 3px -3px hsl(var(--table-border)) inset"
-      : isLastLeftPinnedColumn
-        ? "-3px 0 3px -3px hsl(var(--table-border)) inset"
-        : undefined,
-    left: isPinned === "left" ? column.getStart("left") : undefined,
-    maxWidth: column.columnDef.maxSize ?? undefined,
-    minWidth: column.columnDef.minSize ?? undefined,
-    position: isPinned ? "sticky" : undefined,
-    right: isPinned === "right" ? column.getAfter("right") : undefined,
-    width: column.getSize() || undefined,
-    zIndex: isPinned ? 1 : undefined,
-    ...style,
-  } as React.CSSProperties
-}
 
 export {
   ReactTable,
@@ -429,15 +380,11 @@ export {
   TableBody,
   TableCaption,
   TableCell,
-  TableCellFullColSpan,
-  TableCellsTrack,
-  TableExpandedRow,
+  TableCellColSpanAll,
   TableHead,
   TableHeader,
-  TableHeaderRow,
-  TableHeaderRowsTrack,
+  TableHeadGroup,
   TableRow,
+  TableRowExpanded,
   TableRowsEmpty,
-  TableRowsTrack,
-  useReactTableContext,
 }

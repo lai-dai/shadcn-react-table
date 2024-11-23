@@ -1,5 +1,5 @@
 import { type Metadata } from "next"
-import { ReactTableOriginDemo } from "~/components/tables/examples/react-table"
+import ReactTableOriginDemo from "~/components/examples/react-table"
 import {
   Breadcrumb,
   BreadcrumbItem,

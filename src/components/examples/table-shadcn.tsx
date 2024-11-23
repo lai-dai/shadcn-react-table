@@ -13,7 +13,7 @@ import { Edit2 } from "lucide-react"
 
 export function ShadcnTableDemo() {
   return (
-    <div className="w-full overflow-auto max-h-[72vh] min-h-96">
+    <div className="max-h-[72vh] min-h-96 w-full overflow-auto">
       <Table>
         <TableHeader>
           <TableRow>
