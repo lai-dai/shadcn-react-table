@@ -26,7 +26,7 @@ export function ThemeToggle() {
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
             <MoonIcon className="rotate-90 scale-0 transition-transform duration-500 ease-in-out dark:rotate-0 dark:scale-100" />
 
-            <SunIcon className="scale-1000 absolute rotate-0 transition-transform duration-500 ease-in-out dark:-rotate-90 dark:scale-0" />
+            <SunIcon className="scale-100 absolute rotate-0 transition-transform duration-500 ease-in-out dark:-rotate-90 dark:scale-0" />
 
             <span className="sr-only">Switch Theme</span>
           </Button>
