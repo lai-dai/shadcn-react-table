@@ -4,10 +4,10 @@ import { GeistSans } from "geist/font/sans"
 import { type Viewport, type Metadata } from "next"
 import { Providers } from "~/app/providers"
 import { AppSidebar } from "~/components/layouts/app-sidebar"
-import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar"
-import { SiteHeader } from "~/components/layouts/site-header"
-import { META_THEME_COLORS } from "~/config/site"
 import { SiteFooter } from "~/components/layouts/site-footer"
+import { SiteHeader } from "~/components/layouts/site-header"
+import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar"
+import { META_THEME_COLORS } from "~/config/site"
 
 export const metadata: Metadata = {
   title: "Shadcn React Table",
@@ -39,9 +39,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
-      lang="vi"
       className={`${GeistSans.variable}`}
-      suppressHydrationWarning>
+      lang={"vi"}
+      suppressHydrationWarning={true}>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -52,16 +52,18 @@ export default function RootLayout({
                 }
               } catch (_) {}
             `,
-          }}
-        />
+          }}/>
       </head>
-      <body className="min-h-screen bg-background font-sans antialiased">
+
+      <body className={"min-h-screen bg-background font-sans antialiased"}>
         <Providers>
-          <div className="container mx-auto border-x">
-            <SidebarProvider defaultOpen={false} className="block">
+          <div className={"container mx-auto border-x"}>
+            <SidebarProvider
+              className={"block"}
+              defaultOpen={false}>
               <AppSidebar />
 
-              <SidebarInset className="md:pl-[--sidebar-width]">
+              <SidebarInset className={"md:pl-[--sidebar-width]"}>
                 <SiteHeader />
 
                 {children}

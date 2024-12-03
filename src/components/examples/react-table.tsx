@@ -2,8 +2,6 @@
 
 import { type RowSelectionState } from "@tanstack/react-table"
 import { useState } from "react"
-import { Persons100 } from "~/data/person-100"
-import { type IPerson } from "~/lib/make-data"
 import { columns } from "~/components/tables/columns"
 import {
   ReactTable,
@@ -15,6 +13,8 @@ import {
   TableHeadGroup,
   TableRow,
 } from "~/components/ui/react-table"
+import { Persons100 } from "~/data/person-100"
+import { type IPerson } from "~/lib/make-data"
 
 export default function ReactTableOriginDemo() {
   const [data] = useState<IPerson[]>(Persons100)
@@ -23,11 +23,9 @@ export default function ReactTableOriginDemo() {
   return (
     <div
       className={
-        "max-h-[72vh] min-h-96 w-full overflow-auto rounded-md border border-table-border"
+        "max-h-[72vh] w-full overflow-auto"
       }>
       <ReactTable
-        data={data}
-        columns={columns}
         initialState={{
           columnPinning: {
             right: ["actions"],
@@ -36,6 +34,8 @@ export default function ReactTableOriginDemo() {
         state={{
           rowSelection,
         }}
+        columns={columns}
+        data={data}
         onRowSelectionChange={setRowSelection}>
         <Table>
           <TableHeader>

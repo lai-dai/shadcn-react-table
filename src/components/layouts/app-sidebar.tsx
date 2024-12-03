@@ -4,6 +4,12 @@ import { ChevronDown, type LucideIcon, Table } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "~/components/ui/collapsible"
+import { ScrollArea } from "~/components/ui/scroll-area"
+import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
@@ -20,13 +26,7 @@ import {
   SidebarGroupLabel,
   SidebarFooter,
 } from "~/components/ui/sidebar"
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "~/components/ui/collapsible"
 import { useIsMobile } from "~/hooks/use-mobile"
-import { ScrollArea } from "~/components/ui/scroll-area"
 
 interface MenuItem {
   children?: MenuItem[]
@@ -61,6 +61,18 @@ const Menu: MenuItem[] = [
         title: "React Table 01",
         url: "/style-01",
       },
+      {
+        title: "React Table 02",
+        url: "/style-02",
+      },
+      {
+        title: "React Table 03",
+        url: "/style-03",
+      },
+      {
+        title: "React Table 04",
+        url: "/style-04",
+      },
     ],
   },
 ]
@@ -70,18 +82,21 @@ export function AppSidebar() {
 
   return (
     <Sidebar
-      collapsible={isMobile ? undefined : "none"}
-      className="fixed top-0 z-10 h-screen border-r">
-      <SidebarHeader className="h-16 justify-center px-4">
+      className={"fixed top-0 z-10 h-screen border-r"}
+      collapsible={isMobile ? undefined : "none"}>
+      <SidebarHeader className={"h-16 justify-center px-4"}>
         <h1>
           <Link
+            className={"font-bold md:text-lg"}
             href={"https://ui.shadcn.com/"}
-            referrerPolicy="no-referrer"
-            className="font-bold md:text-lg">
-            Shadcn
+            referrerPolicy={"no-referrer"}>
+            {"Shadcn"}
           </Link>{" "}
-          <Link href={"/"} className="text-sm text-muted-foreground">
-            React Table
+
+          <Link
+            className={"text-sm text-muted-foreground"}
+            href={"/"}>
+            {"React Table"}
           </Link>
         </h1>
       </SidebarHeader>
@@ -92,7 +107,9 @@ export function AppSidebar() {
             <SidebarGroupContent>
               <SidebarMenu>
                 {Menu.map((it, idx) => (
-                  <Tree key={idx} {...it} />
+                  <Tree
+                    key={idx}
+                    {...it} />
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>
@@ -100,7 +117,7 @@ export function AppSidebar() {
         </ScrollArea>
       </SidebarContent>
 
-      <SidebarFooter className="h-16 justify-center px-4 md:h-24" />
+      <SidebarFooter className={"h-16 justify-center px-4 md:h-24"} />
     </Sidebar>
   )
 }
@@ -131,15 +148,15 @@ function Tree({ isSubMenu, ...props }: MenuItem & { isSubMenu?: boolean }) {
     const activeDD = handleActive(props.url)
     return (
       <Comp
-        onClick={() => setOpenMobile(false)}
+        asChild={true}
         isActive={activeDD}
-        asChild
-        tooltip={props.title}
-        title={props.title}>
+        onClick={() => setOpenMobile(false)}
+        title={props.title}
+        tooltip={props.title}>
         <Link href={props.url ?? "#"}>
           {!isSubMenu && (props.icon ? <props.icon /> : null)}
 
-          <span className="grow truncate leading-5">{props.title}</span>
+          <span className={"grow truncate leading-5"}>{props.title}</span>
         </Link>
       </Comp>
     )
@@ -150,23 +167,26 @@ function Tree({ isSubMenu, ...props }: MenuItem & { isSubMenu?: boolean }) {
   return (
     <Comp>
       <Collapsible
-        defaultOpen
-        className="group/collapsible [&[data-state=open]>button>svg:last-child]:rotate-90">
-        <CollapsibleTrigger asChild>
+        className={"group/collapsible [&[data-state=open]>button>svg:last-child]:rotate-90"}
+        defaultOpen={true}>
+        <CollapsibleTrigger asChild={true}>
           <SidebarMenuButton title={props?.title}>
             {!isSubMenu && (props?.icon ? <props.icon /> : null)}
 
-            <span className="grow truncate leading-5">{props?.title}</span>
+            <span className={"grow truncate leading-5"}>{props?.title}</span>
 
-            <ChevronDown className="ml-auto transition-transform duration-200" />
+            <ChevronDown className={"ml-auto transition-transform duration-200"} />
           </SidebarMenuButton>
         </CollapsibleTrigger>
 
         {Array.isArray(props?.children) && (
           <CollapsibleContent>
-            <SidebarMenuSub className="mr-0 pr-0">
+            <SidebarMenuSub className={"mr-0 pr-0"}>
               {props?.children.map((child, idx) => (
-                <Tree key={idx} isSubMenu {...child} />
+                <Tree
+                  isSubMenu={true}
+                  key={idx}
+                  {...child} />
               ))}
             </SidebarMenuSub>
           </CollapsibleContent>

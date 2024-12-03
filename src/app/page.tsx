@@ -14,15 +14,17 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className="space-y-6 p-3 md:p-6">
+    <div className={"space-y-6 p-3 md:p-6"}>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbPage className="opacity-75">Doc</BreadcrumbPage>
+            <BreadcrumbPage className={"opacity-75"}>{"Doc"}</BreadcrumbPage>
           </BreadcrumbItem>
+
           <BreadcrumbSeparator />
+
           <BreadcrumbItem>
-            <BreadcrumbPage>React Table</BreadcrumbPage>
+            <BreadcrumbPage>{"React Table"}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
