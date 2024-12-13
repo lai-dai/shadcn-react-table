@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className="p-3 md:p-6">
+    <div className={"p-3 md:p-6"}>
       <ReactTableOriginDemo />
     </div>
   )

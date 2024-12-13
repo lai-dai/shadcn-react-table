@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 export default function ShadcnTablePage() {
   return (
-    <div className="p-3 md:p-6">
+    <div className={"p-3 md:p-6"}>
       <ShadcnTableDemo />
     </div>
   )

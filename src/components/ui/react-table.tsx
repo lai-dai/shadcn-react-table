@@ -2,7 +2,6 @@
 
 import {
   flexRender,
-  getCoreRowModel,
   type Cell,
   type Column,
   type Header,
@@ -10,10 +9,8 @@ import {
   type Row,
   type RowData,
   type Table as ITable,
-  type TableOptions,
-  useReactTable,
 } from "@tanstack/react-table"
-import * as React from "react"
+import React from "react"
 
 import { cn } from "~/lib/utils"
 
@@ -93,66 +90,61 @@ export function useReactTableContext<T extends RowData>() {
   return context as ITable<T>
 }
 
-export interface ReactTableProps<T extends RowData>
-  extends Omit<TableOptions<T>, "getCoreRowModel"> {
-  children?: ChildrenRenderer<React.ReactNode, ITable<T>>
+export interface ReactTableProps<T extends RowData> {
+  children: React.ReactNode
+  table: ITable<T>
 }
 
-function ReactTable<T>({ children, ...props }: ReactTableProps<T>) {
-  const table = useReactTable({
-    ...props,
-    getCoreRowModel: getCoreRowModel(),
-  })
+function ReactTable<T>({ children, table }: ReactTableProps<T>) {
   return (
     <ReactTableContext.Provider value={table as ITable<RowData>}>
-      {rendererChildren(children, table)}
+      {children}
     </ReactTableContext.Provider>
   )
 }
 
-interface TableProps<T extends RowData>
-  extends Omit<React.HTMLAttributes<HTMLTableElement>, "children"> {
-  children?: ChildrenRenderer<React.ReactNode, ITable<T>>
-}
-
-const Table = React.forwardRef<HTMLTableElement, TableProps<RowData>>(
-  ({ className, children, ...props }, ref) => {
-    const table = useReactTableContext()
-    return (
-      <table
-        className={cn("w-full border-collapse text-sm", className)}
-        ref={ref}
-        {...props}>
-        {rendererChildren(children, table)}
-      </table>
-    )
-  },
-)
+const Table = React.forwardRef<
+  HTMLTableElement,
+  React.HTMLAttributes<HTMLTableElement>
+>(({ className, ...props }, ref) => {
+  return (
+    <table
+      className={cn("w-full border-collapse text-sm", className)}
+      ref={ref}
+      {...props}/>
+  )
+})
 Table.displayName = "Table"
 
 interface TableHeaderProps<T extends RowData>
   extends Omit<React.HTMLAttributes<HTMLTableSectionElement>, "children"> {
   children?: ChildrenRenderer<React.ReactElement, HeaderGroup<T>>
+  asFragment?: boolean
 }
 
 const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
   TableHeaderProps<RowData>
->(({ children, className, ...props }, ref) => {
+>(({ children, className, asFragment, ...props }, ref) => {
   const table = useReactTableContext()
-  return (
+  const Comp = asFragment ? (
+    <React.Fragment />
+  ) : (
     <thead
       className={cn("text-left", className)}
       ref={ref}
-      {...props}>
-      {table.getHeaderGroups().map(headerGroup => (
-        <React.Fragment key={headerGroup.id}>
-          {clonerElement(rendererChildren(children, headerGroup)!, {
-            headerGroup,
-          })}
-        </React.Fragment>
-      ))}
-    </thead>
+      {...props} />
+  )
+  return React.cloneElement(
+    Comp,
+    undefined,
+    table.getHeaderGroups().map(headerGroup => (
+      <React.Fragment key={headerGroup.id}>
+        {clonerElement(rendererChildren(children, headerGroup)!, {
+          headerGroup,
+        })}
+      </React.Fragment>
+    )),
   )
 })
 TableHeader.displayName = "TableHeader"
@@ -211,30 +203,31 @@ TableHead.displayName = "TableHead"
 interface TableBodyProps<T extends RowData>
   extends Omit<React.HTMLAttributes<HTMLTableSectionElement>, "children"> {
   children?: ChildrenRenderer<React.ReactElement, Row<T>>
+  asFragment?: boolean
 }
 
 const TableBody = React.forwardRef<
   HTMLTableSectionElement,
   TableBodyProps<RowData>
->(({ children, ...props }, ref) => {
+>(({ children, asFragment, ...props }, ref) => {
   const table = useReactTableContext()
   const rows = table.getRowModel().rows
-
+  const Comp = asFragment ? <React.Fragment /> : <tbody
+    ref={ref}
+    {...props} />
   if (!rows.length) {
     return null
   }
-  return (
-    <tbody
-      ref={ref}
-      {...props}>
-      {rows.map(row => (
-        <React.Fragment key={row.id}>
-          {clonerElement(rendererChildren(children, row)!, {
-            row,
-          })}
-        </React.Fragment>
-      ))}
-    </tbody>
+  return React.cloneElement(
+    Comp,
+    undefined,
+    rows.map(row => (
+      <React.Fragment key={row.id}>
+        {clonerElement(rendererChildren(children, row)!, {
+          row,
+        })}
+      </React.Fragment>
+    )),
   )
 })
 TableBody.displayName = "TableBody"
@@ -272,7 +265,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps<RowData>>(
         data-even={
           typeof row?.index === "number" ? row?.index % 2 !== 0 : undefined
         }
-        data-selected={row?.getIsSelected()}
+        aria-selected={row?.getIsSelected()}
         ref={ref}
         {...props}>
         {row?.getVisibleCells().map(cell => (

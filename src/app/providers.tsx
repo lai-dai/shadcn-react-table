@@ -1,20 +1,19 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { ThemeProvider } from "next-themes";
+import { ThemeProvider } from "next-themes"
+import * as React from "react"
 
 interface ProvidersProps {
-  children?: React.ReactNode;
+  children?: React.ReactNode
 }
 export function Providers({ children }: ProvidersProps) {
   return (
     <ThemeProvider
-      attribute="class"
-      defaultTheme="dark"
-      enableSystem={false}
+      attribute={"class"}
+      defaultTheme={"dark"}
       disableTransitionOnChange={false}
-    >
+      enableSystem={false}>
       {children}
     </ThemeProvider>
-  );
+  )
 }

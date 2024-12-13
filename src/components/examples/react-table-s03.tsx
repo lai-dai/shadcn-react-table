@@ -1,6 +1,10 @@
 "use client"
 
-import { type RowSelectionState } from "@tanstack/react-table"
+import {
+  getCoreRowModel,
+  useReactTable,
+  type RowSelectionState,
+} from "@tanstack/react-table"
 import { useState } from "react"
 import { columns } from "~/components/tables/columns"
 import {
@@ -20,17 +24,27 @@ export function ReactTableS03Demo() {
   const [data] = useState<IPerson[]>(Persons100)
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
 
+  const table = useReactTable({
+    getCoreRowModel: getCoreRowModel(),
+    initialState: {
+      columnPinning: {
+        right: ["actions"],
+      },
+    },
+    state: {
+      rowSelection,
+    },
+    onRowSelectionChange: setRowSelection,
+    columns: columns,
+    data: data,
+  })
+
   return (
     <div
       className={
         "max-h-[72vh] w-full overflow-auto rounded-md border border-table-border"
       }>
-      <ReactTable
-        columns={columns}
-        data={data}
-        initialState={{ columnPinning: { right: ["actions"] } }}
-        onRowSelectionChange={setRowSelection}
-        state={{ rowSelection }}>
+      <ReactTable table={table}>
         <Table className={"text-sm"}>
           <TableHeader
             className={
