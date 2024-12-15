@@ -11,17 +11,20 @@ export function GithubLink() {
   return (
     <TooltipProvider delayDuration={100}>
       <Tooltip>
-        <TooltipTrigger asChild>
+        <TooltipTrigger asChild={true}>
           <Link
-            referrerPolicy="no-referrer"
-            target="_blank"
+            className={"flex items-center text-sm"}
             href={"https://github.com/lai-dai/shadcn-react-table"}
-            className="flex items-center text-sm">
-            <GitBranch className="mr-1 size-3" /> main*
+            referrerPolicy={"no-referrer"}
+            target={"_blank"}>
+            <GitBranch className={"mr-1 size-3"} />
+
+            {"main*"}
           </Link>
         </TooltipTrigger>
+
         <TooltipContent>
-          <p>GitHub</p>
+          <p>{"GitHub"}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

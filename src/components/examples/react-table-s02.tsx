@@ -65,7 +65,7 @@ export function ReactTableS02Demo() {
               }>
               <TableCell
                 className={
-                  "border-r border-table-border px-2 py-1 align-middle group-hover/tableRow:border-table-secondary group-hover/tableRow:!bg-table-accent data-[pinned=true]:bg-table group-data-[even=true]/tableRow:bg-table-secondary group-data-[selected=true]/tableRow:!bg-table-primary group-data-[selected=true]/tableRow:!text-table-primary-foreground"
+                  "border-r border-table-border px-2 py-1 align-middle group-hover/tableRow:border-table-secondary group-hover/tableRow:!bg-table-accent data-[pinned=true]:bg-table group-data-[even=true]/tableRow:bg-table-secondary group-aria-[selected=true]/tableRow:!bg-table-primary group-aria-[selected=true]/tableRow:!text-table-primary-foreground"
                 }/>
             </TableRow>
           </TableBody>

@@ -5,9 +5,8 @@ import {
   useReactTable,
   type RowSelectionState,
 } from "@tanstack/react-table"
-import { Fragment, useState } from "react"
+import React from "react"
 import { columns } from "~/components/tables/columns"
-import { Button } from "~/components/ui/button"
 import {
   ReactTable,
   Table,
@@ -22,8 +21,8 @@ import { Persons100 } from "~/data/person-100"
 import { type IPerson } from "~/lib/make-data"
 
 export default function ReactTableOriginDemo() {
-  const [data] = useState<IPerson[]>(Persons100)
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+  const [data] = React.useState<IPerson[]>(Persons100)
+  const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({})
 
   const table = useReactTable({
     getCoreRowModel: getCoreRowModel(),

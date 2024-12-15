@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     "Radix UI",
     "Shadcn UI",
     "TanStack Table",
+    "React Table"
   ],
   authors: [
     {
